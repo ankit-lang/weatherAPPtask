@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="block1">
+        <input type="text" placeholder="Enter The City" />
+        <button><img src="./images/search.png" alt="search" /></button>
+      </div>
+      <div class="error">
+        <p>Invalid City Name</p>
+      </div>
+      <div class="block2">
+        <img src="./images/rain.png" class="icon" alt="img" />
+        <h1 class="tem">22 C</h1>
+        <select name="temp" id="temp">
+          <option value="ce">Celcius</option>
+          <option value="fa">Fahrenheit</option>
+        </select>
+        <h2 class="city">New York</h2>
+        <div class="details">
+          <div class="col">
+            <img src="./images/humidity.png" alt="img" />
+            <div>
+              <p class="humidity">50%</p>
+              <p>Humidity</p>
+            </div>
+          </div>
+          <div class="col">
+            <p class="des">discription</p>
+          </div>
+
+          <div class="col">
+            <img src="./images/wind.png" alt="img" />
+            <div>
+              <p class="wind">14 km/ hr</p>
+              <p>Wind</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const apikey = "7dfc8b695bdaf9caaa22b96a6ae2f715";
+      const apiurl =
+        "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+      const searchfield = document.querySelector(".block1 input");
+      const btn = document.querySelector(".block1 button");
+      const icon = document.querySelector(".icon");
+
+      async function fetchApi(city) {
+        const details = await fetch(apiurl + city + `&appid=${apikey}`);
+        if (details.status == 404) {
+          document.querySelector(".error").style.display = "block";
+          document.querySelector(".block2").style.display = "none";
+        } else {
+          document.querySelector(".error").style.display = "none";
+          const data = await details.json();
+
+          document.querySelector(".city").innerHTML = data.name;
+          document.querySelector(".tem").innerHTML =
+            Math.round(data.main.temp) + "°C";
+          document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
+          document.querySelector(".humidity").innerHTML =
+            data.main.humidity + "%";
+          document.querySelector(".des").innerHTML =
+            data.weather[0].description + "  \n ";
+          const block2 = document.querySelector(".block2").style.display =
+            "block";
+
+          const option = document.querySelector("#temp");
+        
+          option.addEventListener("click",()=>{
+           
+            if(option.value == "fa"){
+            const temincel = data.main.temp;
+            const teminfa = Fahrenheit = (temincel * 9/5) + 32;
+            // teminfa = Math.round(tempinfa)
+          document.querySelector(".tem").innerHTML= teminfa +"°F" 
+          }
+          if(option.value == "ce"){
+            const temincel = data.main.temp;
+            // temincel = Math.round(tempincel)
+            document.querySelector(".tem").innerHTML= temincel +"°C" 
+          }
+          })
+          
+         
+
+          const day = data.weather[0].main;
+
+          if (day == "Clouds") {
+            icon.src = "./images/clouds.png";
+          } else if (day == "Clear") {
+            icon.src = "./images/clear.png";
+          } else if (day == "Rain") {
+            icon.src = "./images/rain.png";
+          } else if (day == "Drizzle") {
+            icon.src = "./images/drizzle.png";
+          } else if (day == "Mist") {
+            icon.src = "./images/mist.png";
+          }
+        }
+      }
+      btn.addEventListener("click", () => {
+        fetchApi(searchfield.value);
+      });
+    </script>
+  </body>
+</html>
